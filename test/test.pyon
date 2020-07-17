@@ -1,0 +1,80 @@
+'normal':'dict'
+key:'free key'
+list: [1, 2, 3, ['oops'], 4]
+dict: {a:1, b:2, c:{d:[1, 2, 3]}} # inline free keys
+'multiline string': '''
+	triple
+	quoted
+'''
+some: ''' """ '''
+confusing: """ ''' """
+quotes: ''' """ '''
+'multiline dict':
+	b:1
+	c:
+	# nesting
+		d:2
+'multiline list':
+	1
+	2
+	# nesting
+		1
+		2
+'stupid nesting':
+					1
+				2
+			3
+		4
+	5
+'list of dicts':
+		a:1
+		b:2
+	, # dedented commas to separate same level structures
+		a:10
+		b:20
+'list on dict on dict':
+	a: 1
+	b: # quivalent to b:[1]
+		1
+	c:
+		1
+		2
+		3
+		4
+		5
+'dict on list on dict':
+	1
+	2
+		'a':'b'
+	3
+	4
+'full type list':
+	"a"
+	1
+	1.1
+	1j
+	True
+	None
+		1
+		2
+		3
+	,
+		1:2
+		3:4
+		5:6
+special:
+	logic:
+		True:True
+		False:False
+		None:None
+	ints:
+		1: 1
+		2: 2
+	floats:
+		# indent with tabs (fixed size), align dict with spaces
+		120000.0  : 120000.0
+		1.234     : 1.234
+		1.346e-25 : 1.346e-25
+	complex:
+		1123423j: 434735698+1134527j
+		32346247-521j: 'only + and - are allowed, and only in (real,imaginary) order'
