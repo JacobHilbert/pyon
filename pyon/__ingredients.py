@@ -3,6 +3,7 @@ import re
 import base64
 
 pattern = {
+	# 1
 	"string"            : r"(?<!\\)('''|\"\"\"|\"|')([\S\s]*?)(?<!\\)\1",
 	"comment"           : r"#[\S\s]*?\n",
 	"free_key"          : r"(\t*)([^' \n,\{]+)(?= *:)",
@@ -18,13 +19,24 @@ CSON = {
 	"null"  : "None",
 }
 
-#def quote_escape(
+# 1
 
-def string_escape(s:str) -> str:
-	'''Converts string `repr` into writable strings.
-	This function is intended to make f" '{string_escape(s)}' " parseable by ast.literal_eval.
-	string repr, as generated as a subcall from str on a dict/list that contains strings.'''
-	return re.sub(r"(?<!\\)(\'|\")",r"\\\1",s).replace("\\n","\n").replace("\\t","\t")
+
+def quote_escape(s:str) -> str:
+	'''Escapes the quotes on `s`. " -> \"
+	The converse of this operation is quote_activate'''
+	return re.sub(r"(?<!\\)(\'|\")",r"\\\1",s) # pending, pattern unscaped_quote
+
+def quote_activate(s:str) -> str:
+	'''Un-escapes the quotes on `s`. \" -> "
+	The converse of this operation is quote_escape'''
+	return re.sub(r"\\(\'|\")",r"\1",s)
+
+def special_escape(s:str) -> str:
+	return s.replace("\n","\\n").replace("\t","\\t")
+
+def special_activate(s:str) -> str:
+	return s.replace("\\n","\n").replace("\\t","\t")
 
 def string_index_replace(text:str, i:int, rep:str) -> str:
 	'''Returns a copy of `text` with the character at position `i` replaced by `rep`.'''
@@ -47,13 +59,10 @@ def literal_string_encode(match:re.match) -> str:
 def literal_string_decode(match:re.match) -> str:
 	'''url_decode, but as a response for re.sub.
 	Intended to be used with pattern['string'], as it expects \\1 to be the quote kind and \\2 its contents.
-	It produces single-quote strings when possible, but when the string contains a \\n character, is converted to triple quotes.
-	'''
-	string = string_escape(url_decode(match.group(2)))
-	# check for multiline strings and triple-quote them
+	It produces single-quote strings when possible, but when the string contains a \n character, is converted to triple quotes.
+	It scapes all quotes and activates all escape sequences.'''
+	string = special_activate(quote_escape(url_decode(match.group(2))))
 	kind = "'''" if "\n" in string else match.group(1)
-	#if "\n" in string:
-#		kind = "'''"
 	return kind+string+kind
 
 def is_raw_key(text:str) -> bool:
@@ -89,7 +98,6 @@ def which_structure(text:str) -> (list,dict,False):
 def innermost_structure_index(text:str) -> (int,int):
 	'''
 	Returns the starting and ending index of `text` that corresponds to the deepest nested matching parenthesis.
-
 	Usage:
 		struct = innermost_structure_index(text)
 		text[slice(*struct)] # contents
@@ -102,6 +110,3 @@ def innermost_structure_index(text:str) -> (int,int):
 		return (end_index - begin_reversed_index, end_index)
 	except ValueError:
 		return False
-
-
-

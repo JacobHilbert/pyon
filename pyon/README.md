@@ -26,7 +26,7 @@ From the standard library:
 	* `\1`: quote style
 	* `\2`: contents
 
-* `literal_string_encode(match:re.match) -> str` and `literal_string_decode(match:re.match) -> str` functions. Given a match on the text, this functions return the appropiate replacement to encode or decode it.
+* `literal_string_encode(match:re.match) -> str` function. Given a match on the text, this functions return the appropiate replacement to encode it.
 
 * `comment` pattern: `#[\S\s]*?\n`
 
@@ -119,23 +119,18 @@ Clean the string from `\n` and tabs.
 
 ### 4. Parsing and decoding
 
-If we simple decode the stings, newlines, quotes and other things could mess up with the parser (there is no easy way to escape all teh necessary quotes, and in a code string there is no difference between a newline in a string and a physical newline).
+#### Ingredients:
 
-So this will feel a little hacky.
+* `literal_string_decode(match:re.match) -> str`, the copmplement of the function from the Load recipe:
+	* `string` is the second capture group, but passed through `url_decode` and `string_escape` functions.
+	* `kind` is initially the first capture group, but is turned into `'''` if `string` has any `\n`
+	* Returns `kind+string+kind`.
 
-#### Preparation
+### Procedure
 
-You will need an _empty_ dictionary to save the translations for the decoding.
+Decode with `literal_string_decode` on `re.sub`, and escape all the special characters like tabs of newlines.
 
-#### Procedure
-
-Capture all the strings on a list. At this point, all strings are encoded and single quoted. Loop through this list:
-
-1. gerenrate an unique number `k` (could be sequential)
-2. Add to the dictionary the pair `k:decoded`, where `decoded` is de decoded string (no quotes)
-3. replace the encoded string on the text _including the quotes_, and put in its place a call to your dictionary with key `k`.
-
-Once this is done for each string on the text, you can just `eval()` the result. Since we scaped everything, and every `()` and unquoted text was examined, there is no security risk on this eval.
+Since we escaped everything, and every `()` and unquoted text was examined, there is no security risk on parsing this with `eval` and returning it.
 
 ## Dump a `dict` on PyON format
 
@@ -187,10 +182,7 @@ At the end, join the processed lines, separated by `\n`. It is recommended to us
 * `string_escape(s:str) -> str` function, that escapes all quotes, and unscapes `\\n` and `\\t`.
 * `string` pattern from the Load recipe
 * `url_decode` from the Load recipe
-* `literal_string_decode(match:re.match) -> str`, the copmplement of the function from the Load recipe:
-	* `string` is the second capture group, but passed through `url_decode` and `string_escape` functions.
-	* `kind` is initially the first capture group, but is turned into `'''` if `string` has any `\n`
-	* Returns `kind+string+kind`.
+* `literal_string_decode` from the Load recipe
 
 #### Procedure
 

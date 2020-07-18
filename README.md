@@ -49,13 +49,15 @@ The implementation, in a formant with some semblance of a cooking recipe, can be
 
 	- [ ] implementation functions
 
-	- [ ] API
+	- [x] API
 
 - [ ] Correct the indentation on multiline strings (!)
 
 - [ ] Allow `nan` as  a float, maybe via `numpy`. Maybe `inf` and `-inf?`
 
-	This could be bodged by using that translation dictionary hacky thing.
+	* For load: This could be bodged by using that translation dictionary hacky thing. It should be excluded from the free key thing, too.
+
+	* For dump: as a free `nan`
 
 - [ ] Provide line-by-line syntax errors
 
