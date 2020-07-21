@@ -10,7 +10,11 @@ pip install . -e
 
 ## API
 
+Similar to the `json` stdlib package:
 
+* `pyon.load(filename)` to load a file. `pyon.loads(string)` to parse a string
+
+* `pyon.dump(d,filename)` to dump a dictionary `d` into a file. `pyon.dumps(d)` to dump a dictionary into a string
 
 
 ## Specification
@@ -44,6 +48,8 @@ Note: this definition of hashable is not the full extent of python's hashable cl
 The implementation, in a formant with some semblance of a cooking recipe, can be found as a `README.md` in the pyon folder.
 
 ## TO DO
+
+- [ ] Check the grammar
 
 - [ ] Write tests for
 
