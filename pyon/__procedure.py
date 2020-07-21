@@ -64,16 +64,21 @@ def dumps(obj:dict, indent_mode="\t") -> str:
 	if not isinstance(obj,dict):
 		raise TypeError("PyON dump is only intended for dict, but "+type(obj).__name__+" passed.")
 	else:
+		# 1.1
 		result = repr(obj)
-		# 1.1 encode strings
+		# 1.2
 		result = re.sub(pattern["string"],literal_string_encode,result)
-		# 1.2 de-parenthesize complex numbers
+		# 1.3
 		result = re.sub(pattern["complex"],r"\1",result)
-		# 1.3 erase spaces
+		# 1.4
 		result = result.replace(" ","")
-		# 1.4 Python structures to indent and dedent tokens, separted by 	spaces
+		# 1.5 
+		result = result.replace("[]","LIST").replace("{}","DICT")
+		# 1.6 
 		result = re.sub(r"\{|\["," ( ",result)
 		result = re.sub(r"\}|\]"," ) ",result)
+		# 1.7
+		result = result.replace("LIST","[]").replace("DICT","{}")
 		# 2 restructure
 		result_lines = []
 		level = 0

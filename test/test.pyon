@@ -2,6 +2,9 @@
 key:'free key'
 list: [1, 2, 3, ['oops'], 4]
 dict: {a:1, b:2, c:{d:[1, 2, 3]}} # inline free keys
+empty:
+	[]
+	{}
 'multiline string': '''
 	triple
 	quoted

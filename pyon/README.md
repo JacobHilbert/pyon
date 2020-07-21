@@ -155,7 +155,11 @@ Since we escaped everything, and every `()` and unquoted text was examined, ther
 
 1. Erase all spaces
 
+1. Replace empty lists and dicts to `LIST` and `DICT` tokens.
+
 1. Convert python `[]` and `{}` structures to indent-dedent `()` tokens, separated by spaces, i.e. `'{'` will be replaced by `' ( '`
+
+1. Replace back: `LIST` to `[]`, `DICT` to `{}`
 
 ### 2. Reestructuring
 
