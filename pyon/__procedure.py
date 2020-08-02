@@ -58,7 +58,7 @@ def loads(text:str, indent_mode="\t") -> dict:
 	# 4
 	result = re.sub(pattern["string"],literal_string_decode,result)
 	result = special_escape(result)
-	return eval(result)
+	return ast.literal_eval(result)
 
 def dumps(obj:dict, indent_mode="\t") -> str:
 	if not isinstance(obj,dict):

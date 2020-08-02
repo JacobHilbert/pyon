@@ -130,7 +130,9 @@ Clean the string from `\n` and tabs.
 
 Decode with `literal_string_decode` on `re.sub`, and escape all the special characters like tabs of newlines.
 
-Since we escaped everything, and every `()` and unquoted text was examined, there is no security risk on parsing this with `eval` and returning it.
+~~Since we escaped everything, and every `()` and unquoted text was examined, there is no security risk on parsing this with `eval` and returning it.~~
+
+Parse the result with `ast.literal_eval()` and return it.
 
 ## Dump a `dict` on PyON format
 
