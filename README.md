@@ -51,9 +51,9 @@ The implementation, in a formant with some semblance of a cooking recipe, can be
 
 - [ ] Check the grammar
 
-- [ ] Write tests for
+- [x] Write tests for
 
-	- [ ] implementation functions
+	- [x] implementation functions
 
 	- [x] API
 
