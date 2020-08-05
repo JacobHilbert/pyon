@@ -1,0 +1,109 @@
+{
+	"normal": "dict",
+	"key": "free key",
+	"list": 
+	[
+		1, 
+		2, 
+		3, 
+		[
+			"oops"
+		], 
+		4
+	], 
+	"dict": 
+	{
+		"a": 1, 
+		"b": 2, 
+		"c": 
+		{
+			"d": 
+			[
+				1,
+				2,
+				3
+			]
+		}
+	},
+	"empty": 
+	[
+		[], 
+		{}
+	],
+	"multiline string": "triple\nquoted",
+	"some": " \"\"\" ",
+	"confusing": " ''' ",
+	"quotes": " \"\"\" ",
+	"stupid nesting": 
+	[
+		[
+			[
+				[
+					[
+						1
+					],
+					2
+				],
+				3
+			],
+			4
+		],
+		5
+	],
+	"list of dicts": 
+	[
+		{
+			"a": 1,
+			"b": 2
+		},
+		{
+			"a": 10,
+			"b": 20
+		}
+	],
+	"list on dict on dict": 
+	{
+		"a": 1,
+		"b": 
+		[
+			1
+		],
+		"c": 
+		[
+			1,
+			2,
+			3,
+			4,
+			5
+		]
+	},
+	"dict on list on dict": 
+	[
+		1,
+		2,
+		{
+			"a": "b",
+			"c": "d"
+		},
+		3,
+		4
+	],
+	"types list": 
+	[
+		"a",
+		1,
+		1.1,
+		true,
+		null,
+		[
+			1,
+			2,
+			3
+		],
+		{
+			"1": 2,
+			"3": 4,
+			"5": 6
+		}
+	]
+}
