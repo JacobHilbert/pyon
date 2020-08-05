@@ -1,0 +1,21 @@
+# Default PyON benchmark at 2020-08-05 17:11:36.276307+00:00
+# Made with 100 loop, 50 repetitions per loop. Divide by 50 to obtain single run duration.
+# Data is in [mean,std] format, in seconds
+
+
+pyon:
+	load: [0.20,0.03]
+	dump: [0.040,0.005]
+
+cson:
+	load: [1.26,0.10]
+	dump: [0.016,0.002]
+
+json:
+	load: [0.018,0.003]
+	dump: [0.008,0.001]
+
+yaml:
+	load: [0.43,0.01]
+	dump: [0.20,0.01]
+

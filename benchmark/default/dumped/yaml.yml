@@ -17,9 +17,7 @@ dict:
 empty:
 - []
 - {}
-multiline string: 'triple
-
-  quoted'
+multiline string: "\n\ttriple\n\tquoted\n"
 some: ' """ '
 confusing: ' '''''' '
 quotes: ' """ '
@@ -60,6 +58,6 @@ types list:
 - - 1
   - 2
   - 3
-- '1': 2
-  '3': 4
-  '5': 6
+- 1: 2
+  3: 4
+  5: 6
