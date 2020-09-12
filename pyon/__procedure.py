@@ -52,13 +52,13 @@ def loads(text:str, indent_mode="\t") -> dict:
 	open_struct = {list:"[",dict:"{"}
 	close_struct = {list:"]",dict:"}"}
 	while (i := innermost_structure_index(result)):
-		kind = which_structure(result[slice(*i)])
+		kind = which_structure(re.sub(pattern["string"],literal_string_decode,result[slice(*i)]))
 		result = string_index_replace(result,i[0]-1,open_struct[kind])
 		result = string_index_replace(result,i[1],close_struct[kind])
 	# 4
 	result = re.sub(pattern["string"],literal_string_decode,result)
 	result = special_escape(result)
-	return ast.literal_eval(result)
+	return tuned_literal_eval(result)
 
 def dumps(obj:dict, indent_mode="\t") -> str:
 	if not isinstance(obj,dict):
@@ -71,13 +71,16 @@ def dumps(obj:dict, indent_mode="\t") -> str:
 		# 1.3
 		result = re.sub(pattern["complex"],r"\1",result)
 		# 1.4
+		# must replace by the url-enconded string, later decoding will assume this
+		result = result.replace("nan","float('bmFu')").replace("inf","float('aW5m')")
+		# 1.5
 		result = result.replace(" ","")
-		# 1.5 
-		result = result.replace("[]","LIST").replace("{}","DICT")
 		# 1.6 
+		result = result.replace("[]","LIST").replace("{}","DICT")
+		# 1.7 
 		result = re.sub(r"\{|\["," « ",result)
 		result = re.sub(r"\}|\]"," » ",result)
-		# 1.7
+		# 1.8
 		result = result.replace("LIST","[]").replace("DICT","{}")
 		# 2 restructure
 		result_lines = []
@@ -86,7 +89,7 @@ def dumps(obj:dict, indent_mode="\t") -> str:
 		for this in [s for s in re.split(" |,",result) if s][1:-1]:
 			if this == "«":
 				if last == "»":
-					result_lines.append(level*"\t"+",") # put a comma 	between same-level structures
+					result_lines.append(level*"\t"+",") # put a comma between same-level structures
 				level += 1
 			elif this == "»":
 				level -= 1

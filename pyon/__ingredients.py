@@ -18,6 +18,72 @@ CSON = {
 	"null"  : "None",
 }
 
+def tuned_literal_eval(node_or_string):
+	"""
+	Safely evaluate an expression node or a string containing a Python
+	expression.  The string or node provided may only consist of the following
+	Python literal structures: strings, bytes, ints, floats, complexes, tuples, 
+	lists, dicts, sets, booleans, and None.
+	
+	This is a tuned version of the python stdlib ast literal_eval, modified to
+	accept float("nan") and float("inf") special values, possibly signed.
+	
+	>>> tuned_literal_eval("float('nan')")
+	nan
+	>>> tuned_literal_eval("float('inf')")
+	inf
+	>>> tuned_literal_eval("-float('inf')")
+	-inf
+	"""
+	if isinstance(node_or_string, str):
+		node_or_string = ast.parse(node_or_string, mode='eval')
+	if isinstance(node_or_string, ast.Expression):
+		node_or_string = node_or_string.body
+	def _raise_malformed_node(node):
+		raise ValueError(f'malformed node or string: {node!r}')
+	def _convert_num(node):
+		if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and
+			  node.func.id == 'float' and len(node.args)==1 and node.args[0].value in ["nan","inf"]):
+			return float(_convert(node.args[0]))
+		elif not isinstance(node, ast.Constant) or type(node.value) not in (int, float, complex):
+			_raise_malformed_node(node)
+		return node.value
+	def _convert_signed_num(node):
+		if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub)):
+			operand = _convert_num(node.operand)
+			if isinstance(node.op, ast.UAdd):
+				return + operand
+			else:
+				return - operand
+		return _convert_num(node)
+	def _convert(node):
+		if isinstance(node, ast.Constant):
+			return node.value
+		elif isinstance(node, ast.Tuple):
+			return tuple(map(_convert, node.elts))
+		elif isinstance(node, ast.List):
+			return list(map(_convert, node.elts))
+		elif isinstance(node, ast.Set):
+			return set(map(_convert, node.elts))
+		elif (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and
+			  node.func.id == 'set' and node.args == node.keywords == []):
+			return set()
+		elif isinstance(node, ast.Dict):
+			if len(node.keys) != len(node.values):
+				_raise_malformed_node(node)
+			return dict(zip(map(_convert, node.keys),
+							map(_convert, node.values)))
+		elif isinstance(node, ast.BinOp) and isinstance(node.op, (ast.Add, ast.Sub)):
+			left = _convert_signed_num(node.left)
+			right = _convert_num(node.right)
+			if isinstance(left, (int, float)) and isinstance(right, complex):
+				if isinstance(node.op, ast.Add):
+					return left + right
+				else:
+					return left - right
+		return _convert_signed_num(node)
+	return _convert(node_or_string)
+
 def quote_escape(s:str) -> str:
 	'''
 	Escapes the quotes on `s`.
@@ -114,9 +180,9 @@ def is_raw_key(text:str) -> bool:
 	True
 	'''
 	try:
-		hash(ast.literal_eval(text))
+		hash(tuned_literal_eval(text))
 		return True
-	except (ValueError,TypeError): # from ast.literal_eval, from hash
+	except (ValueError,TypeError): # from tuned_literal_eval, from hash
 		return False
 
 def free_key_quote(match:re.match) -> str:
@@ -152,10 +218,10 @@ def which_structure(text:str) -> (list,dict,False):
 	False
 	'''
 	try:
-		return type(ast.literal_eval(f"[{text}]"))
+		return type(tuned_literal_eval(f"[{text}]"))
 	except (SyntaxError, ValueError):
 		try:
-			return type(ast.literal_eval(f"{{{text}}}"))
+			return type(tuned_literal_eval(f"{{{text}}}"))
 		except (SyntaxError, ValueError):
 			return False
 

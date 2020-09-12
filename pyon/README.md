@@ -153,6 +153,8 @@ Parse the result with `ast.literal_eval()` and return it.
 
 1. De-parenthesize the non-imaginary complex numbers with the `complex` pattern
 
+1. Replace all raw `nan` and `inf` with the `float` directive.
+
 1. Erase all spaces
 
 1. Replace empty lists and dicts to `LIST` and `DICT` tokens.

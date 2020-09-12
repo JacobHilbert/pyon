@@ -59,9 +59,11 @@ The implementation, in a formant with some semblance of a cooking recipe, can be
 
 - [ ] Correct the indentation on multiline strings (!)
 
-- [ ] Allow `nan`, `inf` and `-inf`, the IEEE 754 special floats.
+- [x] Allow `nan`, `inf` and `-inf`, the IEEE 754 special floats.
 
 	* Problem: the safe `ast.literal_eval` cannot handle those.
+	
+	* Solution: write my own `literal_eval` that allows that safely.
 
 - [ ] Provide line-by-line syntax errors
 

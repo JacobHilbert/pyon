@@ -78,6 +78,10 @@ special:
 		120000.0  : 120000.0
 		1.234     : 1.234
 		1.346e-25 : 1.346e-25
+		# special values
+		"nan" : float("nan")
+		"inf" : float("inf")
+		"-inf" : -float("inf")
 	complex:
 		1123423j: 434735698+1134527j
 		32346247-521j: 'only + and - are allowed, and only in (real,imaginary) order'
