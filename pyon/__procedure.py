@@ -37,17 +37,17 @@ def loads(text:str, indent_mode="\t") -> dict:
 		level_diff = this_level - level
 		this_line = re.sub(pattern["comma_worth"],r"\1,",m[1])
 		if   level_diff > 0:
-			this_line = "("* level_diff + this_line
+			this_line = "«"* level_diff + this_line
 		elif level_diff < 0:
-			this_line = ")"*-level_diff + this_line
+			this_line = "»"*-level_diff + this_line
 		result_lines.append(this_line)
 		level = this_level
 	# 2.2
-	result_lines.append(")"*level)
+	result_lines.append("»"*level)
 	result_lines.append("}")
 	result = "".join(result_lines)
 	# 2.3
-	result = re.sub(pattern["dedent_no_comma"],"),",result)
+	result = re.sub(pattern["dedent_no_comma"],"»,",result)
 	# 3
 	open_struct = {list:"[",dict:"{"}
 	close_struct = {list:"]",dict:"}"}
@@ -75,8 +75,8 @@ def dumps(obj:dict, indent_mode="\t") -> str:
 		# 1.5 
 		result = result.replace("[]","LIST").replace("{}","DICT")
 		# 1.6 
-		result = re.sub(r"\{|\["," ( ",result)
-		result = re.sub(r"\}|\]"," ) ",result)
+		result = re.sub(r"\{|\["," « ",result)
+		result = re.sub(r"\}|\]"," » ",result)
 		# 1.7
 		result = result.replace("LIST","[]").replace("DICT","{}")
 		# 2 restructure
@@ -84,11 +84,11 @@ def dumps(obj:dict, indent_mode="\t") -> str:
 		level = 0
 		last = ""
 		for this in [s for s in re.split(" |,",result) if s][1:-1]:
-			if this == "(":
-				if last == ")":
+			if this == "«":
+				if last == "»":
 					result_lines.append(level*"\t"+",") # put a comma 	between same-level structures
 				level += 1
-			elif this == ")":
+			elif this == "»":
 				level -= 1
 			else:
 				result_lines.append(level*"\t"+this)
