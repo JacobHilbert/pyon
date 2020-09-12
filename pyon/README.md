@@ -89,12 +89,12 @@ There should be a list to hold the engraved lines. Its first element must be and
 	* Check if there is a match of `comma_worth`, and replace it by itself with a comma.
 	* Obtain the indentation level and line content with the pattern `indent_level`.
 	* Compare the indentation level of this line with the one before
-		* If it's bigger, put as many `(` at the beginning of the line as de difference
-		* If it's lower, put as many `)` at the beginning of the line as de difference
+		* If it's bigger, put as many `«` at the beginning of the line as de difference
+		* If it's lower, put as many `»` at the beginning of the line as de difference
 
-2. Add a line with as many `)` as the current indentation level, and a final `}`.
+2. Add a line with as many `«` as the current indentation level, and a final `}`.
 
-3. Put a comma on those closing `)` that have no commas, using the pattern `dedent_no_comma`.
+3. Put a comma on those closing `»` that have no commas, using the pattern `dedent_no_comma`.
 
 ### 3. Identify structures
 
@@ -104,7 +104,7 @@ There should be a list to hold the engraved lines. Its first element must be and
 
 * `string_replace_index(text:str,i:int,rep:str) -> str` function that returns a version of `text` with the `i`-th character replaced by `
 
-* `innermost_structure_index(text:str) -> (int,int)` function, that searches for the deepest nest of `()` and returns the indices of the opening and close `()`
+* `innermost_structure_index(text:str) -> (int,int)` function, that searches for the deepest nest of `«»` and returns the indices of the opening and close `«»`
 
 #### Preparation
 
@@ -114,8 +114,8 @@ Clean the string from `\n` and tabs.
 
 1. Get the most inner structure contents via slices and `innermost_structure_index`
 2. Proof it with `which_structure`
-3. depending on the answer, replace the `()` for `{}` or `[]` with the `string_replace_index` function.
-4. Rinse ande repeat until there is no `()` lasting
+3. depending on the answer, replace the `«»` for `{}` or `[]` with the `string_replace_index` function.
+4. Rinse ande repeat until there is no `«»` lasting
 
 ### 4. Parsing and decoding
 
@@ -129,8 +129,6 @@ Clean the string from `\n` and tabs.
 ### Procedure
 
 Decode with `literal_string_decode` on `re.sub`, and escape all the special characters like tabs of newlines.
-
-~~Since we escaped everything, and every `()` and unquoted text was examined, there is no security risk on parsing this with `eval` and returning it.~~
 
 Parse the result with `ast.literal_eval()` and return it.
 
@@ -159,7 +157,7 @@ Parse the result with `ast.literal_eval()` and return it.
 
 1. Replace empty lists and dicts to `LIST` and `DICT` tokens.
 
-1. Convert python `[]` and `{}` structures to indent-dedent `()` tokens, separated by spaces, i.e. `'{'` will be replaced by `' ( '`
+1. Convert python `[]` and `{}` structures to indent-dedent `«»` tokens, separated by spaces, i.e. `'{'` will be replaced by `' « '`
 
 1. Replace back: `LIST` to `[]`, `DICT` to `{}`
 
@@ -173,10 +171,10 @@ You will need an empty list to store the processed lines, a zero counter for the
 
 Split the result from step 1 at every space (we put all those spaces in step 1.5) or comma. Iterate through that list:
 
-1. If the element is an indent token `(`:
-	* If the last element was a dedent token `)`, put a `level` indented comma into the processed lines list.
+1. If the element is an indent token `«`:
+	* If the last element was a dedent token `»`, put a `level` indented comma into the processed lines list.
 	* Increase the level counter
-1. If the element is a dedent token `)`, decrease the level counter.
+1. If the element is a dedent token `»`, decrease the level counter.
 1. If is anything else, add it to the procesed lines with proper indentation level.
 
 At the end, join the processed lines, separated by `\n`. It is recommended to use `"\n".join(.....)`

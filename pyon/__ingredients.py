@@ -8,7 +8,7 @@ pattern = {
 	"free_key"          : r"(\t*)([^' \n,\{]+)(?= *:)",
 	"comma_worth"       : r"([^:,])$",
 	"indent_level"      : r"^(\t*)([^\n]*?)$",
-	"dedent_no_comma"   : r"\)(?!,)",
+	"dedent_no_comma"   : r"\»(?!,)",
 	"complex"           : r"\((\d+(?:\+|\-)\d+j)\)",
 }
 
@@ -163,20 +163,20 @@ def innermost_structure_index(text:str) -> (int,int):
 	'''
 	Returns the starting and ending index of `text` that corresponds to the deepest nested matching parenthesis.
 	
-	>>> t = "out (1st nest (2nd nest) 1st nest) out"
+	>>> t = "out «1st nest «2nd nest» 1st nest» out"
 	>>> struct = innermost_structure_index(t)
 	>>> struct
 	(15, 23)
 	>>> t[slice(*struct)] # contents
 	'2nd nest'
 	>>> t[struct[0]-1]
-	'('
+	'«'
 	>>> t[struct[1]]
-	')'
+	'»'
 	'''
 	try:
-		end_index = text.index(")")
-		begin_reversed_index = list(reversed(text[:end_index])).index("(")
+		end_index = text.index("»")
+		begin_reversed_index = list(reversed(text[:end_index])).index("«")
 		return (end_index - begin_reversed_index, end_index)
 	except ValueError:
 		return False
