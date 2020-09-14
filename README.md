@@ -5,7 +5,7 @@ An attempt of python object notation. Highly inspired on CSON, but with a more m
 
 On this folder:
 ```
-pip install . -e
+pip install .
 ```
 
 ## API
