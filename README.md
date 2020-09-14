@@ -8,6 +8,118 @@ On this folder:
 pip install .
 ```
 
+## What is allowed
+
+This is a package intended to serialize python `dict` objects, so the main object shoul be a dictionary.
+
+The values of this main `dict` could be (almost) any of the bsic data types of python:
+* antoher `dict`
+* a `list`
+* Any unicode string (`"` and `'`), including multine (`'''` and `"""`)
+* Any number, including:
+	* `float`, and floating point special values `float('nan')`, `float('inf')` and `-float('inf')`
+	* Any arbitrary size sinteger
+	* Complex numbers, in the format `{re}+{im}j`
+* boolean values `True` and `False`
+* `None`
+
+The only exception is the `set` class. I see no point on serializing sets; just use lists.
+
+Dict keys in python must be _hashable_, which narrows the options to:
+* strings
+* numbers
+	* `float` is not recommended as a dict key, due to its natural problem with the `==` operator.
+* booleans
+* `None`
+
+### Examples
+
+#### simple dict
+
+```python
+# Python onle line
+{"a":1, "b":2, "c":{"a":1, "b":2}}
+
+# Python multi line
+{
+	"a":1,
+	"b":2,
+	"c": {
+		"a":1,
+		"b":2,
+	}
+}
+
+# pyon
+a: 1
+b: 2
+c: 
+	a: 1
+	b: 2
+```
+(You can ommit the string quotes on the key if the key is a valid varaible name, i.e. has only letters, numbers and `_`)
+
+#### list
+
+```python
+# Python one line
+{"my list":[1,2,3,[4,5,6]]}
+
+# Python multiline
+{
+	"my list": [
+		1,
+		2,
+		3,
+		[
+			4,
+			5,
+			6,
+		]
+	]
+}
+
+# pyon
+"my list":
+	1
+	2
+	3
+		4
+		5
+		6
+```
+
+#### list of dicts
+
+```python
+# Python one line
+{"list of dicts":[{"a":1,"b":2},{"a":10,"b":20}]}
+
+# Python multi line
+{
+	"list of dicts": [
+		{
+			"a":1,
+			"b":2
+		},{
+			"a":10,
+			"b":20
+		}
+	]
+}
+
+# pyon
+"list of dicts" :
+		a:1
+		b:2
+	, 
+		a:10
+		b:20
+```
+That comma must be one indentation level less that the objects it separates.
+
+
+
 ## API
 
 Similar to the `json` stdlib package:
@@ -15,6 +127,7 @@ Similar to the `json` stdlib package:
 * `pyon.load(filename)` to load a file. `pyon.loads(string)` to parse a string
 
 * `pyon.dump(d,filename)` to dump a dictionary `d` into a file. `pyon.dumps(d)` to dump a dictionary into a string
+
 
 
 ## Specification
